@@ -1,18 +1,22 @@
-%define		gem_name	mixlib-cli
+#
+# Conditional build:
+%bcond_without	tests		# build without tests
+
+%define		pkgname	mixlib-cli
 Summary:	Simple Ruby mix-in for CLI interfaces
-Name:		ruby-%{gem_name}
+Name:		ruby-%{pkgname}
 Version:	1.3.0
-Release:	1
+Release:	2
 License:	Apache v2.0
 Group:		Development/Languages
 URL:		http://github.com/opscode/mixlib-cli
-Source0:	http://gems.rubyforge.org/gems/%{gem_name}-%{version}.gem
+Source0:	http://gems.rubyforge.org/gems/%{pkgname}-%{version}.gem
 # Source0-md5:	ef197d6bf95a73680fb0bf279c5f33ac
 # Patch to silence mixlib-cli tests;
 # see http://tickets.opscode.com/browse/MIXLIB-8
 Patch0:		mixlib-cli-silence-tests.patch
 BuildRequires:	rpm-rubyprov
-BuildRequires:	rpmbuild(macros) >= 1.656
+BuildRequires:	rpmbuild(macros) >= 1.665
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -32,6 +36,9 @@ This package contains documentation for %{name}.
 %patch0 -p1
 
 %build
+# write .gemspec
+%__gem_helper spec
+
 %if %{with tests}
 # need RSpec2
 rspec
@@ -39,8 +46,9 @@ rspec
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT%{ruby_vendorlibdir}
+install -d $RPM_BUILD_ROOT{%{ruby_vendorlibdir},%{ruby_specdir}}
 cp -a lib/* $RPM_BUILD_ROOT%{ruby_vendorlibdir}
+cp -p %{pkgname}-%{version}.gemspec $RPM_BUILD_ROOT%{ruby_specdir}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -50,6 +58,7 @@ rm -rf $RPM_BUILD_ROOT
 %doc README.rdoc NOTICE
 %{ruby_vendorlibdir}/mixlib/cli.rb
 %{ruby_vendorlibdir}/mixlib/cli
+%{ruby_specdir}/%{pkgname}-%{version}.gemspec
 
 # FIXME, who owns the dir?
 %dir %{ruby_vendorlibdir}/mixlib
