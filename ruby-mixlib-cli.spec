@@ -1,16 +1,16 @@
 #
 # Conditional build:
-%bcond_without	tests		# build without tests
+%bcond_with	tests		# build without tests
 
 %define		pkgname	mixlib-cli
 Summary:	Simple Ruby mix-in for CLI interfaces
 Name:		ruby-%{pkgname}
-Version:	1.4.0
-Release:	4
+Version:	1.7.0
+Release:	1
 License:	Apache v2.0
 Group:		Development/Languages
 Source0:	http://gems.rubyforge.org/gems/%{pkgname}-%{version}.gem
-# Source0-md5:	1d26beabb487df9661d521c717846922
+# Source0-md5:	d025beeb0f66c64633f9c27888aa42f3
 # Patch to silence mixlib-cli tests;
 # see http://tickets.opscode.com/browse/MIXLIB-8
 Patch0:		mixlib-cli-silence-tests.patch
@@ -59,7 +59,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc README.rdoc NOTICE
+%doc README.md NOTICE
 %{ruby_vendorlibdir}/mixlib/cli.rb
 %{ruby_vendorlibdir}/mixlib/cli
 %{ruby_specdir}/%{pkgname}-%{version}.gemspec
